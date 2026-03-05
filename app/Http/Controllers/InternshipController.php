@@ -67,37 +67,38 @@ class InternshipController extends Controller
         return redirect()->back()->with('success', 'تمت إضافة الفرصة التدريبية بنجاح!');
     }
 
-
     public function show(Request $request)
     {
         $search = $request->input('search');
         $duration = $request->input('duration');
-        $company = $request->input('company');
+        $company_id = $request->input('company');
 
-        $internships = Internship::query();
+        $query = Internship::with('company');
 
         if ($search) {
-            $internships = $internships->where('title', 'like', '%' . $search . '%')
-                ->orWhereHas('company', function($query) use ($search) {
-                    $query->where('company_name', 'like', '%' . $search . '%');
-                });
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', '%' . $search . '%')
+                    ->orWhereHas('company', function($subQ) use ($search) {
+                        $subQ->where('company_name', 'like', '%' . $search . '%');
+                    });
+            });
         }
+
 
         if ($duration) {
-            $internships = $internships->whereRaw("duration REGEXP ?", ["(^| )$duration"]);
+            $query->where('duration', 'like', '%' . $duration . '%');
         }
 
-        if ($company) {
-            $internships = $internships->where('company_id', $company);
+        if ($company_id) {
+            $query->where('company_id', $company_id);
         }
 
-        $internships = $internships->get();
+        $internships = $query->latest()->paginate(8);
 
-        $companies = Company::all();
+        $companies = Company::select('id', 'company_name')->get();
 
         return view('student.showTrainingOpportunities', compact('internships', 'companies'));
     }
-
 
 
 

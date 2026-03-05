@@ -1,91 +1,137 @@
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
+/*body {*/
+/*    font-family: Arial, sans-serif;*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    min-height: 100vh;*/
+/*}*/
 
 
-.container-fluid {
-    display: flex;
-    flex-grow: 1;
-}
-/* تنسيق الهيدر */
-header {
-    background-color: #1D4ED8; /* اللون الأزرق */
-    color: white;
-    padding-top: 1.75rem;
-    padding-bottom: 1.75rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    position: relative;
-}
+/*.container-fluid {*/
+/*    display: flex;*/
+/*    flex-grow: 1;*/
+/*}*/
+/*!* تنسيق الهيدر *!*/
+/*header {*/
+/*    background-color: #1D4ED8; !* اللون الأزرق *!*/
+/*    color: white;*/
+/*    padding-top: 1.75rem;*/
+/*    padding-bottom: 1.75rem;*/
+/*    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);*/
+/*    position: relative;*/
+/*}*/
 
-.container {
-    max-width: 1280px;
-    margin: 0 auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-left: 1rem;
-    padding-right: 1rem;
-}
+/*.container {*/
+/*    max-width: 1280px;*/
+/*    margin: 0 auto;*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    align-items: center;*/
+/*    padding-left: 1rem;*/
+/*    padding-right: 1rem;*/
+/*}*/
 
-.active {
-    color: #56a9fc;  /* تغيير اللون إلى الأزرق عند hover */
-    background-color: rgba(106, 185, 255, 0.2);  /* خلفية شفافة باللون الأزرق */
+/*.active {*/
+/*    color: #56a9fc;  !* تغيير اللون إلى الأزرق عند hover *!*/
+/*    background-color: rgba(106, 185, 255, 0.2);  !* خلفية شفافة باللون الأزرق *!*/
+/*    border-radius: 10px;*/
+/*    font-weight: bold;*/
+/*}*/
+
+/*!* تنسيق العنوان *!*/
+/*h1 {*/
+/*    font-size: 1.25rem;*/
+/*    font-weight: bold;*/
+/*    position: absolute;*/
+/*    right: 1.75rem;*/
+/*    top: 50%;*/
+/*    transform: translateY(-50%);*/
+/*}*/
+
+/*!* تنسيق الأيقونات *!*/
+/*button {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    gap: 1rem;*/
+/*}*/
+
+/*button svg {*/
+/*    width: 1.5rem;*/
+/*    height: 1.5rem;*/
+/*    fill: currentColor;*/
+/*}*/
+
+/*li a:hover {*/
+/*    color: #56a9fc;  !* تغيير اللون إلى الأزرق عند hover *!*/
+/*    background-color: rgba(106, 185, 255, 0.2);  !* خلفية شفافة باللون الأزرق *!*/
+/*    border-radius: 10px;*/
+/*}*/
+/*!* ملف style.css *!*/
+/*.custom-aside-width {*/
+/*    width: 200px; !* يمكنك تعديل القيمة حسب احتياجك *!*/
+/*}*/
+
+
+
+/*.main-content {*/
+/*    flex: 1;*/
+/*    padding: 20px;*/
+/*    background-color: #f8f9fa;*/
+/*}*/
+
+
+/*.icon {*/
+/*    display: inline-flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    width: 24px;*/
+/*    height: 24px;*/
+/*    font-size: 20px;*/
+/*    color: white;*/
+/*    margin-left: 10px;*/
+/*}*/
+/* تحسين شكل شريط التمرير داخل الإشعارات */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 5px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
     border-radius: 10px;
-    font-weight: bold;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
 }
 
-/* تنسيق العنوان */
-h1 {
-    font-size: 1.25rem;
-    font-weight: bold;
-    position: absolute;
-    right: 1.75rem;
-    top: 50%;
-    transform: translateY(-50%);
+/* حركة تذبذب خفيفة للجرس عند وجود إشعارات (اختياري) */
+#notifBadge + i {
+    animation: ring 4s .7s ease-in-out infinite;
 }
 
-/* تنسيق الأيقونات */
-button {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-button svg {
-    width: 1.5rem;
-    height: 1.5rem;
-    fill: currentColor;
-}
-
-li a:hover {
-    color: #56a9fc;  /* تغيير اللون إلى الأزرق عند hover */
-    background-color: rgba(106, 185, 255, 0.2);  /* خلفية شفافة باللون الأزرق */
-    border-radius: 10px;
-}
-/* ملف style.css */
-.custom-aside-width {
-    width: 200px; /* يمكنك تعديل القيمة حسب احتياجك */
-}
-
-
-
-.main-content {
-    flex: 1;
-    padding: 20px;
-    background-color: #f8f9fa;
-}
-
-
-.icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 24px;
-    height: 24px;
-    font-size: 20px;
-    color: white;
-    margin-left: 10px;
+@keyframes ring {
+    0% { transform: rotate(0); }
+    1% { transform: rotate(30deg); }
+    3% { transform: rotate(-28deg); }
+    5% { transform: rotate(34deg); }
+    7% { transform: rotate(-32deg); }
+    9% { transform: rotate(30deg); }
+    11% { transform: rotate(-28deg); }
+    13% { transform: rotate(26deg); }
+    15% { transform: rotate(-24deg); }
+    17% { transform: rotate(22deg); }
+    19% { transform: rotate(-20deg); }
+    21% { transform: rotate(18deg); }
+    23% { transform: rotate(-16deg); }
+    25% { transform: rotate(14deg); }
+    27% { transform: rotate(-12deg); }
+    29% { transform: rotate(10deg); }
+    31% { transform: rotate(-8deg); }
+    33% { transform: rotate(6deg); }
+    35% { transform: rotate(-4deg); }
+    37% { transform: rotate(2deg); }
+    39% { transform: rotate(-1deg); }
+    41% { transform: rotate(1deg); }
+    43% { transform: rotate(0); }
+    100% { transform: rotate(0); }
 }

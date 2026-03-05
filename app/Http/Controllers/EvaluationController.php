@@ -32,13 +32,6 @@ class EvaluationController extends Controller
 
         $company_id = Auth::user()->company->id;
 
-        $existingBook = Evaluation::where('student_id', $request->student_id)
-            ->whereNotNull('evaluation_letter')
-            ->first();
-
-        if ($existingBook) {
-            return back()->with('error', 'لقد قمت بالفعل برفع كتاب التدريب ولا يمكنك رفع آخر.');
-        }
 
         $filename = $request->file('training_book')->store('public/training_books');
         $storedFilename = str_replace('public/', '', $filename);

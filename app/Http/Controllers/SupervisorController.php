@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\StudentsEvaluationsExport;
+use App\Models\Application;
 use App\Models\Attendance;
 use App\Models\Company;
 use App\Models\Evaluation;
@@ -26,8 +27,15 @@ class SupervisorController extends Controller
     {
         $supervisor_id = Auth::user()->supervisor->id;
         $studentsCount = Student::query()->where('supervisor_id',$supervisor_id)->get()->count();
-        $studentsStartedCount = Student::query()->where('supervisor_id',$supervisor_id)
-                                                ->where('training_status','started')->get()->count();
+
+        $majorsData = Student::select('major', DB::raw('count(*) as total'))
+            ->where('supervisor_id',$supervisor_id)
+            ->groupBy('major')
+            ->orderBy('total', 'desc')
+            ->get();
+
+        $maxStudents = $majorsData->max('total') ?: 1;
+
         $weeksCount = Student::where('supervisor_id', $supervisor_id)
             ->whereHas('weeklyEvaluations')
             ->with('weeklyEvaluations')
@@ -48,44 +56,25 @@ class SupervisorController extends Controller
             ->unique()
             ->count();
 
-        $completedCount = Student::where('supervisor_id', $supervisor_id)
-            ->where('training_status', 'completed')
-            ->count();
+        $companiesCount = Evaluation::where('supervisor_id', $supervisor_id)
+            ->distinct('company_id')
+            ->count('company_id');
 
-        $startedCount = Student::where('supervisor_id', $supervisor_id)
-            ->where('training_status', 'started')
-            ->count();
+        $approvedStudents = Student::join('applications', 'students.id', '=', 'applications.student_id')
+            ->join('companies', 'applications.company_id', '=', 'companies.id')
+            ->where('students.supervisor_id', $supervisor_id)
+            ->where('applications.status', 'مقبول')
+            ->where('applications.admin_approval', 1)
+            ->select(
+                'students.*',
+                'companies.company_name as company_name' // جلب اسم الشركة وتسميته company_name
+            )
+            ->latest('students.created_at')
+            ->take(5)
+            ->get();
 
-        $notStartedCount = Student::where('supervisor_id', $supervisor_id)
-            ->where('training_status', 'Not started')
-            ->count();
-
-        $weeklyEvaluations = Student::where('supervisor_id', $supervisor_id)
-            ->whereHas('weeklyEvaluations')
-            ->with('weeklyEvaluations')
-            ->get()
-            ->flatMap(function($student) {
-                return $student->weeklyEvaluations->map(function($evaluation) {
-                    return [
-                        'week' => $evaluation->week_name,
-                        'evaluation' => $evaluation->evaluation,
-                    ];
-                });
-            });
-
-        $weekGroups = $weeklyEvaluations->groupBy('week');
-
-        $averageScores = [];
-        foreach ($weekGroups as $week => $evaluations) {
-            $averageScores[$week] = $evaluations->avg('evaluation');
-        }
-
-        $weeks = array_keys($averageScores);
-        $average = array_values($averageScores);
-
-
-        return view('supervisor.dashboard',compact('studentsCount','studentsStartedCount' ,'weeksCount'
-            ,'trainingBooks','completedCount','startedCount','notStartedCount','weeklyEvaluations','averageScores','weeks','average'));
+        return view('supervisor.dashboard',compact('studentsCount' ,'weeksCount'
+            ,'trainingBooks','companiesCount','majorsData','maxStudents','approvedStudents'));
     }
 
     public function studentsList(){
@@ -112,7 +101,31 @@ class SupervisorController extends Controller
 
         $weeklyEvaluations = WeeklyEvaluation::where('student_id', $id)->get();
 
-        return view('supervisor.studentDetails', compact('student', 'studentAttendance', 'weeklyEvaluations', 'presentCount', 'absentCount'));
+        $currentInternship = Application::where('student_id',$id )
+            ->where('status', 'مقبول')
+            ->where('admin_approval', 1)
+            ->first();
+
+        $progress = 0;
+
+        if ($currentInternship && $currentInternship->internship->start_date && $currentInternship->internship->end_date) {
+            $start = \Carbon\Carbon::parse($currentInternship->internship->start_date);
+            $end = \Carbon\Carbon::parse($currentInternship->internship->end_date);
+            $now = \Carbon\Carbon::now();
+
+            $totalDays = $start->diffInDays($end);
+
+            $passedDays = $start->diffInDays($now);
+
+            if ($now->greaterThan($end)) {
+                $progress = 100;
+            } elseif ($now->lessThan($start)) {
+                $progress = 0;
+            } else {
+                $progress = ($totalDays > 0) ? round(($passedDays / $totalDays) * 100) : 0;
+            }
+        }
+        return view('supervisor.studentDetails', compact('student','progress', 'weeklyEvaluations', 'presentCount', 'absentCount'));
     }
 
 
@@ -129,7 +142,7 @@ class SupervisorController extends Controller
             ->where('students.supervisor_id', $supervisor_id)
             ->select('companies.*')
             ->distinct()
-            ->get();
+            ->paginate(10);
 
         $companyStudents = $companies->mapWithKeys(function ($company) use ($students) {
             $studentsInCompany = $students->filter(function ($student) use ($company) {
@@ -140,7 +153,8 @@ class SupervisorController extends Controller
                 $application = $student->applications->firstWhere('company_id', $company->id);
                 return [
                     'student' => $student,
-                    'status' => $application ? $application->status : 'لم يتم التقديم'
+                    'status' => $application ? $application->status : 'لم يتم التقديم',
+                    'admin_approval' => $application ? $application->admin_approval : 0
                 ];
             });
 
@@ -158,7 +172,6 @@ class SupervisorController extends Controller
         $students = Student::where('supervisor_id', $supervisor_id)
             ->with('evaluations')
             ->paginate(10);
-     //   $students = collect([]);
         return view('supervisor.rates', compact('students'));
     }
 

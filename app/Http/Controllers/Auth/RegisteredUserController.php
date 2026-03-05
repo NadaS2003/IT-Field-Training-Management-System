@@ -33,7 +33,7 @@ class RegisteredUserController extends Controller
             'department' => ['required', 'string'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'phone_number' => ['required', 'string'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', Rules\Password::defaults()],
         ], [
             'name.required' => 'حقل الاسم مطلوب.',
             'name.string' => 'يجب أن يكون الاسم نصًا.',
@@ -56,7 +56,6 @@ class RegisteredUserController extends Controller
             'phone_number.string' => 'يجب أن يكون رقم الهاتف نصًا.',
 
             'password.required' => 'حقل كلمة المرور مطلوب.',
-            'password.confirmed' => 'تأكيد كلمة المرور غير متطابق.',
             'password.min' => 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.',
         ]);
 
@@ -96,7 +95,7 @@ class RegisteredUserController extends Controller
             'location' => ['required', 'string'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'phone_number' => ['required', 'string'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', Rules\Password::defaults()],
         ], [
             'name.required' => 'حقل اسم الشركة مطلوب.',
             'name.string' => 'يجب أن يكون اسم الشركة نصًا.',
@@ -121,7 +120,6 @@ class RegisteredUserController extends Controller
             'phone_number.string' => 'يجب أن يكون رقم الهاتف نصًا.',
 
             'password.required' => 'حقل كلمة المرور مطلوب.',
-            'password.confirmed' => 'تأكيد كلمة المرور غير متطابق.',
             'password.min' => 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.',
         ]);
 
@@ -168,7 +166,7 @@ class RegisteredUserController extends Controller
             'cv_file' => ['required', 'file', 'mimes:pdf,doc,docx'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'phone_number' => ['required', 'string'],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'password' => ['required', Rules\Password::defaults()],
         ], [
             'name.required' => 'حقل الاسم مطلوب.',
             'name.string' => 'يجب أن يكون الاسم نصًا.',
@@ -201,7 +199,6 @@ class RegisteredUserController extends Controller
             'phone_number.string' => 'يجب أن يكون رقم الهاتف نصًا.',
 
             'password.required' => 'حقل كلمة المرور مطلوب.',
-            'password.confirmed' => 'تأكيد كلمة المرور غير متطابق.',
             'password.min' => 'يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.',
         ]);
 
@@ -226,6 +223,7 @@ class RegisteredUserController extends Controller
             'major' => $request->major,
             'academic_year' => $request->academic_year,
             'cv_file' => $cvPath,
+            'training_status' => 'Not started',
             'phone_number' => $request->phone_number,
             'gpa' => $request->gpa,
         ]);

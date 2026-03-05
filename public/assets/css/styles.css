@@ -1,277 +1,397 @@
-* {
-    box-sizing: border-box; /* التأكد من أن padding و margin لا تؤثر على الحجم */
-}
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    color: #333;
-    min-height: 100vh; /* اجعل الصفحة تمتد بطول المحتوى */
+* { box-sizing: border-box; }
+
+.main-wrapper {
     display: flex;
-    flex-direction: column;
-
+    height: 100vh;
+    overflow: hidden;
 }
 
-.header {
-    background-color: #007bff;
-    color: #fff;
-    padding: 20px;
-    text-align: center;
-    font-size: 1.5rem;
-    margin-bottom: 0;
-}
-
-.container {
-    flex-direction: column;
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 80%;
-    margin: auto; /* تقليل المسافة العلوية والسفلية */
-    min-height: 60vh; /* تقليل ارتفاع الحاوية */
-    padding: 10px 0; /* تقليل التباعد الداخلي */
-}
-
-
-.card-container {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-.alert {
-    padding: 15px;
-    margin: 20px 0;
-    border-radius: 5px;
-    font-size: 16px;
-    font-weight: bold;
-}
-.alert-info {
-    background-color: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
-}
-.card {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    width: 250px;
-}
-
-.card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.card h3 {
-    font-size: 1.25rem;
-    margin: 10px 0;
-    color: #007bff;
-}
-
-.card p {
-    color: #666;
-    font-size: 0.9rem;
-}
-
-.card img {
-    width: 100%;
-    height: 170px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 10px;
-}
-
-
-a{
-    text-decoration: none;
-}
-
-/* تنسيق الصفحة حيث الصورة على اليمين والفورم على الشمال */
-.form-layout {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 50px; /* زيادة المسافة بين الصورة والفورم */
-    max-width: 900px;
-    margin: auto;
-}
-
-/* تنسيق الصورة في الصفحة الخاصة */
-/*.form-layout .image-container {*/
-/*    flex: 1; !* يجعل الصورة تأخذ نصف المساحة *!*/
-/*    text-align: right;*/
-/*    margin-top: 60px; !* تنزيل الصورة للأسفل *!*/
-/*    margin-left: 50px;*/
-/*}*/
-
-.form-layout img {
-    width: 450px; /* حجم أكبر للصورة */
-    height: auto; /* الحفاظ على تناسب الأبعاد */
-    object-fit: contain;
-    border-radius: 10px;
-}
-
-.form-layout .image-container {
-    flex: 1; /* تأخذ نصف المساحة */
-    text-align: right;
-    margin-left: 50px;
-    /*position: sticky;*/
-    /*top: 100px; !* تبقى الصورة ثابتة بعد التمرير *!*/
-    /*align-self: flex-start; !* تجعل الصورة تبقى في الأعلى *!*/
-    position: relative; /* بدلاً من sticky */
-    top: auto; /* إزالة القيم الثابتة */
-    align-self: auto;
-}
-
-/* تنسيق الفورم ليكون على الشمال */
-.form-layout .form-container {
-    flex: 1; /* الفورم يأخذ نصف المساحة */
-    text-align: left;
-    max-width: 700px; /* زيادة عرض الفورم */
-    width: 100%;
-}
-
-.form-container h3 {
-    font-size: 20px; /* زيادة حجم الخط */
-    margin-bottom: 20px; /* مسافة بين العنوان وبقية الفورم */
-    margin-left: 90px;
-}
-
-.form-group {
-    display: flex;
-    justify-content: flex-start; /* جعل المحتوى في الجنب الأيمن */
-    align-items: center; /* محاذاة العناصر بشكل عمودي */
-    margin: 10px 0;
+/* الجانب الخاص بالصورة */
+.image-side {
+    flex: 1.2;
     position: relative;
 }
 
-.form-group label {
-    width: 150px;
-    text-align: right; /* محاذاة النص إلى اليمين */
-
-    margin-left: 60px; /* مسافة بين التسمية وحقل الإدخال */
-    font-size: 16px;
-    white-space: nowrap; /* ضمان بقاء النص في سطر واحد */
+.image-side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
-/* تنسيق حقل الإدخال */
-.form-group input {
-    width: 320px;
-    padding: 10px;
-    margin: 10px 0;
-    border: 3px solid #0076DF; /* الحدود الافتراضية */
+.blue-overlay {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(to bottom, rgba(20, 115, 230, 0.4), rgba(13, 71, 161, 0.7));
+}
+
+/* الجانب الخاص بالنموذج */
+.form-side {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fff;
+}
+
+.login-box {
+    width: 100%;
+    max-width: 420px;
+    padding: 20px;
+}
+
+/* تنسيق الشعار (اللوجو) */
+.brand-header {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 50px;
+}
+
+.brand-title h2 { margin: 0; font-size: 22px; color: #0056b3; }
+.brand-title p { margin: 0; font-size: 20px; color: #666; text-align: left; }
+.brand-logo {
+    background: #007bff;
+    color: white;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    margin-left: 15px;
+    font-size: 20px;
+}
+
+/* ترحيب */
+.welcome-section h1 { font-size: 28px; margin-bottom: 5px; color: #333; }
+.welcome-section p { color: #888; margin-bottom: 30px; font-size: 14px; }
+
+/* الحقول */
+.input-field { margin-bottom: 20px; }
+.input-field label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; }
+
+.input-control { position: relative; }
+.input-control input {
+    width: 100%;
+    padding: 14px 45px 14px 15px;
+    border: 1px solid #eee;
+    background: #fcfcfc;
     border-radius: 15px;
-    font-size: 16px;
-    background-color: transparent;
+    outline: none;
+    transition: 0.3s;
 }
 
-.form-group textarea {
-    width: 320px;
-    padding: 10px;
-    margin: 10px 0;
-    border: 3px solid #0076DF;
-    border-radius: 15px;
-    font-size: 16px;
-    background-color: transparent;
-}
+.input-control input:focus { border-color: #007bff; background: #fff; }
+.input-control i { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); color: #aaa; }
+.input-control i.show-pass { right: auto; left: 15px; cursor: pointer; }
 
-
-.form-group input:focus {
-    border-color: #0056b3;
-}
-.form-group textarea:focus {
-    border-color: #0056b3;
-}
-
-button.btn {
-    padding: 11px 38px;
-    background-color: #007bff;
-    font-size: 14px;
+/* الأزرار */
+.login-btn {
+    width: 100%;
+    padding: 15px;
+    background: #007bff;
     color: white;
     border: none;
-    border-radius: 13px;
+    border-radius: 15px;
+    font-size: 16px;
+    font-weight: bold;
     cursor: pointer;
-    margin-left: 78px;
-    margin-top: 10px;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
 }
 
-button.btn:hover {
-    background-color: #0056b3;
+.separator {
+    text-align: center;
+    margin: 25px 0;
+    position: relative;
 }
-.form-group.remember-forgot {
-    display: flex;
-    justify-content: space-between; /* توزيع العناصر بين اليسار واليمين */
-    align-items: center;
-    margin-right: 210px;
+.separator::before { content: ""; position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: #eee; z-index: 1; }
+.separator span { background: #fff; padding: 0 15px; position: relative; z-index: 2; color: #999; font-size: 14px; }
 
-}
-
-/* حاوية تذكرني مع الـ checkbox على نفس السطر */
-.remember-me {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start; /* محاذاة إلى اليسار */
-    width: 70px;
-}
-
-/* حاوية هل نسيت كلمة المرور لتكون في الجهة اليمنى */
-.forgot-password {
-    font-size: 14px;
-
-}
-
-/* تصميم الـ checkbox العادي */
-.remember-me input[type="checkbox"] {
-    width: 20px; /* عرض المربع */
-    height: 20px; /* ارتفاع المربع */
-    border: 2px solid #0076DF; /* حد المربع باللون الأزرق */
-    margin-left: 10px;
-    background-color: transparent; /* خلفية شفافة */
-    cursor: pointer; /* مؤشر اليد عند التمرير فوق المربع */
-    border-radius: 0; /* إزالة الـ border-radius لجعل الزوايا حادة */
-}
-
-/* تغيير مظهر المربع عند التحديد */
-.remember-me input[type="checkbox"]:checked {
-    background-color: #0076DF; /* تغيير الخلفية إلى الأزرق عند التحديد */
-    border-color: #0056b3; /* تغيير اللون الأزرق الداكن للحد عند التحديد */
-}
-
-/* تنسيق الروابط */
-.forgot-password a {
-    color: #007bff;
-    text-decoration: none;
-}
-
-.forgot-password a:hover {
-    color: #0056b3;
-}
-.invalid-feedback {
-    color: red;
-    font-size: 13px;
-    margin-top: 5px;
+.register-btn {
     display: block;
-    text-align: right; /* جعل النص يبدأ من اليمين */
-    direction: rtl; /* ضبط الاتجاه ليكون من اليمين إلى اليسار */
-    margin-right: 220px;
+    text-align: center;
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #eee;
+    border-radius: 15px;
+    text-decoration: none;
+    color: #555;
+    font-weight: 600;
 }
-.error-feedback {
+/** {*/
+/*    box-sizing: border-box; !* التأكد من أن padding و margin لا تؤثر على الحجم *!*/
+/*}*/
+/*body {*/
+/*    font-family: Arial, sans-serif;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    color: #333;*/
+/*    min-height: 100vh; !* اجعل الصفحة تمتد بطول المحتوى *!*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
 
-    color: #d71313; /* لون النص */
-    padding: 10px; /* مساحة داخلية */
+/*}*/
 
-    border-radius: 5px; /* زوايا مدورة */
-    text-align: right;
-    margin-right: 200px;
-    font-size: medium;
-}
+/*.header {*/
+/*    background-color: #007bff;*/
+/*    color: #fff;*/
+/*    padding: 20px;*/
+/*    text-align: center;*/
+/*    font-size: 1.5rem;*/
+/*    margin-bottom: 0;*/
+/*}*/
+
+/*.container {*/
+/*    flex-direction: column;*/
+/*    flex-grow: 1;*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*    width: 80%;*/
+/*    margin: auto; !* تقليل المسافة العلوية والسفلية *!*/
+/*    min-height: 60vh; !* تقليل ارتفاع الحاوية *!*/
+/*    padding: 10px 0; !* تقليل التباعد الداخلي *!*/
+/*}*/
+
+
+/*.card-container {*/
+/*    display: flex;*/
+/*    gap: 20px;*/
+/*    flex-wrap: wrap;*/
+/*    justify-content: center;*/
+/*}*/
+/*.alert {*/
+/*    padding: 15px;*/
+/*    margin: 20px 0;*/
+/*    border-radius: 5px;*/
+/*    font-size: 16px;*/
+/*    font-weight: bold;*/
+/*}*/
+/*.alert-info {*/
+/*    background-color: #d1ecf1;*/
+/*    color: #0c5460;*/
+/*    border: 1px solid #bee5eb;*/
+/*}*/
+/*.card {*/
+/*    background-color: #fff;*/
+/*    border: 1px solid #ddd;*/
+/*    border-radius: 12px;*/
+/*    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);*/
+/*    padding: 20px;*/
+/*    text-align: center;*/
+/*    transition: transform 0.3s ease, box-shadow 0.3s ease;*/
+/*    cursor: pointer;*/
+/*    width: 250px;*/
+/*}*/
+
+/*.card:hover {*/
+/*    transform: translateY(-10px);*/
+/*    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);*/
+/*}*/
+
+/*.card h3 {*/
+/*    font-size: 1.25rem;*/
+/*    margin: 10px 0;*/
+/*    color: #007bff;*/
+/*}*/
+
+/*.card p {*/
+/*    color: #666;*/
+/*    font-size: 0.9rem;*/
+/*}*/
+
+/*.card img {*/
+/*    width: 100%;*/
+/*    height: 170px;*/
+/*    object-fit: cover;*/
+/*    border-radius: 10px;*/
+/*    margin-bottom: 10px;*/
+/*}*/
+
+
+/*a{*/
+/*    text-decoration: none;*/
+/*}*/
+
+/*!* تنسيق الصفحة حيث الصورة على اليمين والفورم على الشمال *!*/
+/*.form-layout {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    gap: 50px; !* زيادة المسافة بين الصورة والفورم *!*/
+/*    max-width: 900px;*/
+/*    margin: auto;*/
+/*}*/
+
+/*!* تنسيق الصورة في الصفحة الخاصة *!*/
+/*!*.form-layout .image-container {*!*/
+/*!*    flex: 1; !* يجعل الصورة تأخذ نصف المساحة *!*!*/
+/*!*    text-align: right;*!*/
+/*!*    margin-top: 60px; !* تنزيل الصورة للأسفل *!*!*/
+/*!*    margin-left: 50px;*!*/
+/*!*}*!*/
+
+/*.form-layout img {*/
+/*    width: 450px; !* حجم أكبر للصورة *!*/
+/*    height: auto; !* الحفاظ على تناسب الأبعاد *!*/
+/*    object-fit: contain;*/
+/*    border-radius: 10px;*/
+/*}*/
+
+/*.form-layout .image-container {*/
+/*    flex: 1; !* تأخذ نصف المساحة *!*/
+/*    text-align: right;*/
+/*    margin-left: 50px;*/
+/*    !*position: sticky;*!*/
+/*    !*top: 100px; !* تبقى الصورة ثابتة بعد التمرير *!*!*/
+/*    !*align-self: flex-start; !* تجعل الصورة تبقى في الأعلى *!*!*/
+/*    position: relative; !* بدلاً من sticky *!*/
+/*    top: auto; !* إزالة القيم الثابتة *!*/
+/*    align-self: auto;*/
+/*}*/
+
+/*!* تنسيق الفورم ليكون على الشمال *!*/
+/*.form-layout .form-container {*/
+/*    flex: 1; !* الفورم يأخذ نصف المساحة *!*/
+/*    text-align: left;*/
+/*    max-width: 700px; !* زيادة عرض الفورم *!*/
+/*    width: 100%;*/
+/*}*/
+
+/*.form-container h3 {*/
+/*    font-size: 20px; !* زيادة حجم الخط *!*/
+/*    margin-bottom: 20px; !* مسافة بين العنوان وبقية الفورم *!*/
+/*    margin-left: 90px;*/
+/*}*/
+
+/*.form-group {*/
+/*    display: flex;*/
+/*    justify-content: flex-start; !* جعل المحتوى في الجنب الأيمن *!*/
+/*    align-items: center; !* محاذاة العناصر بشكل عمودي *!*/
+/*    margin: 10px 0;*/
+/*    position: relative;*/
+/*}*/
+
+/*.form-group label {*/
+/*    width: 150px;*/
+/*    text-align: right; !* محاذاة النص إلى اليمين *!*/
+
+/*    margin-left: 60px; !* مسافة بين التسمية وحقل الإدخال *!*/
+/*    font-size: 16px;*/
+/*    white-space: nowrap; !* ضمان بقاء النص في سطر واحد *!*/
+/*}*/
+
+/*!* تنسيق حقل الإدخال *!*/
+/*.form-group input {*/
+/*    width: 320px;*/
+/*    padding: 10px;*/
+/*    margin: 10px 0;*/
+/*    border: 3px solid #0076DF; !* الحدود الافتراضية *!*/
+/*    border-radius: 15px;*/
+/*    font-size: 16px;*/
+/*    background-color: transparent;*/
+/*}*/
+
+/*.form-group textarea {*/
+/*    width: 320px;*/
+/*    padding: 10px;*/
+/*    margin: 10px 0;*/
+/*    border: 3px solid #0076DF;*/
+/*    border-radius: 15px;*/
+/*    font-size: 16px;*/
+/*    background-color: transparent;*/
+/*}*/
+
+
+/*.form-group input:focus {*/
+/*    border-color: #0056b3;*/
+/*}*/
+/*.form-group textarea:focus {*/
+/*    border-color: #0056b3;*/
+/*}*/
+
+/*button.btn {*/
+/*    padding: 11px 38px;*/
+/*    background-color: #007bff;*/
+/*    font-size: 14px;*/
+/*    color: white;*/
+/*    border: none;*/
+/*    border-radius: 13px;*/
+/*    cursor: pointer;*/
+/*    margin-left: 78px;*/
+/*    margin-top: 10px;*/
+/*}*/
+
+/*button.btn:hover {*/
+/*    background-color: #0056b3;*/
+/*}*/
+/*.form-group.remember-forgot {*/
+/*    display: flex;*/
+/*    justify-content: space-between; !* توزيع العناصر بين اليسار واليمين *!*/
+/*    align-items: center;*/
+/*    margin-right: 210px;*/
+
+/*}*/
+
+/*!* حاوية تذكرني مع الـ checkbox على نفس السطر *!*/
+/*.remember-me {*/
+/*    display: flex;*/
+/*    align-items: center;*/
+/*    justify-content: flex-start; !* محاذاة إلى اليسار *!*/
+/*    width: 70px;*/
+/*}*/
+
+/*!* حاوية هل نسيت كلمة المرور لتكون في الجهة اليمنى *!*/
+/*.forgot-password {*/
+/*    font-size: 14px;*/
+
+/*}*/
+
+/*!* تصميم الـ checkbox العادي *!*/
+/*.remember-me input[type="checkbox"] {*/
+/*    width: 20px; !* عرض المربع *!*/
+/*    height: 20px; !* ارتفاع المربع *!*/
+/*    border: 2px solid #0076DF; !* حد المربع باللون الأزرق *!*/
+/*    margin-left: 10px;*/
+/*    background-color: transparent; !* خلفية شفافة *!*/
+/*    cursor: pointer; !* مؤشر اليد عند التمرير فوق المربع *!*/
+/*    border-radius: 0; !* إزالة الـ border-radius لجعل الزوايا حادة *!*/
+/*}*/
+
+/*!* تغيير مظهر المربع عند التحديد *!*/
+/*.remember-me input[type="checkbox"]:checked {*/
+/*    background-color: #0076DF; !* تغيير الخلفية إلى الأزرق عند التحديد *!*/
+/*    border-color: #0056b3; !* تغيير اللون الأزرق الداكن للحد عند التحديد *!*/
+/*}*/
+
+/*!* تنسيق الروابط *!*/
+/*.forgot-password a {*/
+/*    color: #007bff;*/
+/*    text-decoration: none;*/
+/*}*/
+
+/*.forgot-password a:hover {*/
+/*    color: #0056b3;*/
+/*}*/
+/*.invalid-feedback {*/
+/*    color: red;*/
+/*    font-size: 13px;*/
+/*    margin-top: 5px;*/
+/*    display: block;*/
+/*    text-align: right; !* جعل النص يبدأ من اليمين *!*/
+/*    direction: rtl; !* ضبط الاتجاه ليكون من اليمين إلى اليسار *!*/
+/*    margin-right: 220px;*/
+/*}*/
+/*.error-feedback {*/
+
+/*    color: #d71313; !* لون النص *!*/
+/*    padding: 10px; !* مساحة داخلية *!*/
+
+/*    border-radius: 5px; !* زوايا مدورة *!*/
+/*    text-align: right;*/
+/*    margin-right: 200px;*/
+/*    font-size: medium;*/
+/*}*/
 
 
 

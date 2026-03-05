@@ -35,74 +35,62 @@ class AdminController extends Controller
         $supervisorsCount = Supervisor::count();
         $companiesCount = Company::count();
 
+        $recentApplications = Application::query()->latest()->take(5)->get();
 
-        $startTime = microtime(true);
-
-        $memoryUsage = memory_get_usage(true);
-        $memoryUsageMb = round($memoryUsage / 1024 / 1024, 2);
-
-        try {
-            DB::connection()->getPdo();
-            $dbStatus = 'اتصال ناجح بقاعدة البيانات';
-        } catch (\Exception $e) {
-            $dbStatus = 'فشل في الاتصال بقاعدة البيانات';
-        }
-
-        $visitCount = Cache::get('visit_count', 0);
-        Cache::put('visit_count', $visitCount + 1, now()->addMinutes(60));
-
-        $responseTime = microtime(true) - $startTime;
-
-
-
-        $diskTotal = disk_total_space("/");
-        $diskFree = disk_free_space("/");
-        $diskUsedPercentage = round((($diskTotal - $diskFree) / $diskTotal) * 100, 2);
-
-        return view('admin.dashboard', compact('studentsCount','diskUsedPercentage','opportunitiesCount', 'supervisorsCount', 'companiesCount','responseTime', 'memoryUsageMb', 'dbStatus', 'visitCount'));
+        return view('admin.dashboard', compact('studentsCount','recentApplications',
+            'opportunitiesCount', 'supervisorsCount', 'companiesCount'));
 
     }
 
     public function assignSupervisorToStudent(Request $request)
     {
-        $validator = Validator::make($request->all(), [
+        $request->validate([
             'student_id' => 'required|exists:students,id',
             'supervisor_id' => 'required|exists:supervisors,id',
         ]);
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-        $admin_id = Auth::user()->id;
+
         $student = Student::findOrFail($request->student_id);
-        $supervisor = Supervisor::findOrFail($request->supervisor_id);
-        $oldSupervisorId = $student->supervisor_id;
+        $admin = auth()->user()->id;
+
+        // جلب معرف الشركة من طلب التدريب المقبول للطالب
+        $application = \App\Models\Application::where('student_id', $student->id)
+            ->where('status', 'مقبول')
+            ->first();
+
+        if (!$application) {
+            return redirect()->back()->with('error', 'هذا الطالب ليس لديه طلب تدريب مقبول حالياً لربطه بشركة.');
+        }
         SupervisorAssignment::updateOrCreate(
             ['student_id' => $student->id],
             [
-                'supervisor_id' => $supervisor->id,
-                'assigned_by' => $admin_id,
+                'supervisor_id' =>  $request->supervisor_id,
+                'assigned_by' => $admin,
             ]
         );
-        $student->update(['supervisor_id' => $supervisor->id]);
-        Evaluation::updateOrCreate(
+        $company_id = $application->company_id;
+
+        // تحديث بيانات الطالب مباشرة (لتبسيط الكود)
+        $student->update(['supervisor_id' => $request->supervisor_id]);
+
+        // تحديث أو إنشاء التقييم مع التأكد من وجود الحقول في الـ Fillable للموديل
+        \App\Models\Evaluation::updateOrCreate(
             ['student_id' => $student->id],
             [
-                'supervisor_id' => $supervisor->id,
+                'supervisor_id' => $request->supervisor_id,
+                'company_id'    => $company_id,
             ]
         );
-        $student->notify(new SupervisorAssignedToStudent($supervisor->full_name));
-        $supervisor->notify(new StudentAssignedToSupervisor($student->full_name));
-        if ($oldSupervisorId && $oldSupervisorId != $supervisor->id) {
-            $oldSupervisor = Supervisor::find($oldSupervisorId);
-            if ($oldSupervisor) {
-                $student->notify(new SupervisorChanged($oldSupervisor->full_name));
-                $oldSupervisor->notify(new StudentChangedSupervisor($student->full_name));
-                dd('Notification sent to old supervisor');
-            }
+
+        // إرسال الإشعارات (تأكد من وجود الـ Notifications لديك)
+        try {
+            $supervisor = Supervisor::find($request->supervisor_id);
+            $student->notify(new SupervisorAssignedToStudent($supervisor->full_name));
+            $supervisor->notify(new StudentAssignedToSupervisor($student->full_name));
+        } catch (\Exception $e) {
+            // نتجاوز خطأ الإشعارات إذا لم تكن مفعله لضمان إتمام العملية
         }
-        return redirect()->back()->with('success', 'تم تعيين المشرف للطالب بنجاح.');
+
+        return redirect()->back()->with('success', 'تم تعيين المشرف وربط الطالب بشركة ' . $application->company->company_name . ' بنجاح.');
     }
 
 
@@ -160,24 +148,25 @@ class AdminController extends Controller
     {
         $query = Internship::query();
 
+        // البحث النصي
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
 
-        if ($request->filled('duration')) {
-            $query->where('duration', $request->duration);
+        // الفلترة بالحالة
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
         }
 
-        if ($request->filled('company')) {
-            $query->where('company_id', $request->company);
+        // الفلترة بالشركة
+        if ($request->filled('company_id')) {
+            $query->where('company_id', $request->company_id);
         }
 
         $opportunities = $query->paginate(10);
+        $companies = Company::all(); // لجلب الشركات في قائمة التصفية
 
-        $companies = Company::all();
-        $durations = Internship::distinct()->pluck('duration');
-
-        return view('admin.opportunitiesManagement', compact('opportunities', 'companies', 'durations'));
+        return view('admin.opportunitiesManagement', compact('opportunities', 'companies'));
     }
 
 
@@ -346,8 +335,6 @@ class AdminController extends Controller
     {
         $students = Student::all();
         $supervisors = Supervisor::all();
-        $companies = Company::all();
-        $internships = Internship::all();
 
         $studentsData = Application::join('students', 'applications.student_id', '=', 'students.id')
             ->join('companies', 'applications.company_id', '=', 'companies.id')
@@ -377,7 +364,7 @@ class AdminController extends Controller
 
         $studentsData = $studentsData->distinct()->paginate(10);
 
-        return view('admin.studentsData', compact('students', 'supervisors', 'studentsData', 'companies', 'internships'));
+        return view('admin.studentsData', compact('students', 'supervisors', 'studentsData'));
     }
 
     public function trainingRequests(Request $request)

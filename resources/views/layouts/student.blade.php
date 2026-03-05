@@ -3,198 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم الطالب</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{asset('assets/css/student.css')}}">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-        <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.min.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
-
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
+    <title>بوابة التدريب - لوحة التحكم</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{asset('assets/css/supervisor.css')}}">
+    <style>
+        body { font-family: 'Tajawal', sans-serif; background-color: #EBF2FA; }
+        .nav-item-active {
+            background-color: #1d4ed8 !important; /* Blue-700 */
+            color: white !important;
+            box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
+        }
+        .sub-item-active {
+            background-color: #eff6ff !important; /* Blue-50 */
+            color: #1d4ed8 !important;
+            font-weight: 700;
+        }
+        .submenu-transition { transition: max-height 0.3s ease-out; overflow: hidden; }
+        .rotate-180 { transform: rotate(180deg); }
+        .hidden-submenu { display: none; }
+    </style>
 </head>
-<body class="bg-100">
-<header class="bg-blue-600 text-white py-7 shadow-md relative">
-    <div class="container mx-auto flex justify-between items-center px-4">
-        <h1 class="text-xl font-bold absolute right-7 top-1/2 transform -translate-y-1/2">لوحة التحكم</h1>
-        <div class="flex items-center absolute left-5 top-1/2 transform -translate-y-1/2">
-            <div class="relative mr-4">
-                <button id="notifButton" class="relative focus:outline-none">
-                    <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 24a2 2 0 002-2h-4a2 2 0 002 2zm6-6V11a6 6 0 10-12 0v7l-2 2v1h16v-1l-2-2z"></path>
-                    </svg>
-                    <span id="notifBadge" class="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-3 h-3 hidden"></span>
-                </button>
-                <div id="notifDropdown" class="absolute right-0 mt-3 w-72 bg-white text-black shadow-lg rounded-lg p-4 hidden z-10 transform translate-x-20">
-                    <h4 class="font-semibold text-lg mb-3 text-gray-700">الإشعارات</h4>
-                    <div class="notifications max-h-60 overflow-y-auto">
-                        @foreach($notifications as $notification)
-                            <div class="notification-item mb-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition duration-300">
-                                <p class="text-sm text-gray-800">{{ $notification->data['message'] }}</p>
-                                <span class="text-xs text-gray-500">{{ $notification->created_at->diffForHumans() }}</span>
-                                @if(is_null($notification->read_at))
-                                    <span class="text-xs text-red-500 font-semibold unread-notification">غير مقروء</span>
-                                @else
-                                    <span class="text-xs text-gray-500 font-semibold">مقروء</span>
-                                @endif
-                            </div>
-                        @endforeach
-                        @if($notifications->isEmpty())
-                            <div class="text-center text-gray-600">
-                                لا توجد إشعارات جديدة.
-                            </div>
-                        @endif
-                    </div>
-                    @if(count($notifications) > 0 && $notifications->whereNull('read_at')->count() > 0)
-                        <button id="markAsRead" class="mt-3 text-blue-500 hover:text-blue-700">جعل الكل مقروء</button>
-                    @endif
-                </div>
-
-            </div>
-
-            <div class="relative">
-                <button id="userMenuButton" class="flex items-center gap-4 px-4 py-2 rounded-lg focus:outline-none">
-                    <span class="font-semibold">{{ \Illuminate\Support\Facades\Auth::user()->name }}</span>
-                    <svg class="w-4 h-4" fill="currentColor" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
-                    </svg>
-                </button>
-                <div id="userDropdown" class="absolute right-0 mt-2 w-40 bg-white text-black shadow-lg rounded-lg p-2 hidden">
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit" class="block w-full text-right px-4 py-2 hover:bg-gray-100 text-sm">تسجيل الخروج</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</header>
+<body class="antialiased">
 
 <div class="flex min-h-screen">
-    <aside class="w-64 bg-gray-800 text-white p-4">
-        <nav>
-            <ul class="space-y-4">
-                <li>
-                    <a href="{{route('student.dashboard')}}" class="block px-4 py-2 flex items-center gap-3 hover:text-blue-400 {{ request()->routeIs('student.dashboard') ? 'active' : '' }}">
-                        <svg class="w-5 h-5 transition duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3 12l9-9 9 9h-3v8h-12v-8h-3z"/>
-                        </svg>
-                        الصفحة الرئيسية
-                    </a>
-                </li>
-                <li>
-                    <a href="{{route('student.showTraining')}}" class="block px-4 py-2 flex items-center gap-3 hover:text-blue-400 {{ request()->routeIs('student.showTraining') ? 'active' : '' }}">
-                        <svg class="w-5 h-5 transition duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M4 4h16v2H4V4zm0 4h16v2H4V8zm0 4h16v6H4v-6z"/>
-                        </svg>
-                        عرض الفرص التدريبية
-                    </a>
-                </li>
-                <li>
-                    <a href="{{route('student.myRequests')}}" class="block px-4 py-2 flex items-center gap-3 hover:text-blue-400 {{ request()->routeIs('student.myRequests') ? 'active' : '' }}">
-                        <svg class="w-5 h-5 transition duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h12v2H3v-2z"/>
-                        </svg>
-                        طلباتي
-                    </a>
-                </li>
-                <li>
-                    <a href="{{route('student.Profile')}}" class="block px-4 py-2 flex items-center gap-3 hover:text-blue-400 {{ request()->routeIs('student.Profile') ? 'active' : '' }}">
-                        <svg class="w-5 h-5 transition duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
-                        </svg>
-                        ملفي الشخصي
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ Auth::user()->student->training_status == 'completed' ? 'https://docs.google.com/forms/d/e/1FAIpQLSc_Ql4MFs52mzv7WljPLhn_p6tse3XQ8vJ6XvrkqsvN34AShg/viewform?usp=sharing' : '#' }}"
-                       class="block px-4 py-2 flex items-center gap-3 hover:text-blue-400
-              {{ Auth::user()->student->training_status != 'completed' ? 'pointer-events-none opacity-50' : '' }}"
-                       target="_blank">
-                        <svg class="w-5 h-5 transition duration-300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2l3 6 6 1-4 5 1 7-6-3-6 3 1-7-4-5 6-1 3-6z"/>
-                        </svg>
-                        تقييم الشركات
-                    </a>
-                </li>
-            </ul>
+
+    <aside class="w-64 bg-white border-l border-gray-100 flex flex-col">
+        <div class="p-6 flex items-center gap-3 mb-6">
+            <div class="bg-blue-600 w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg">
+                <i class="fa-solid fa-graduation-cap text-lg"></i>
+            </div>
+            <div>
+                <h2 class="text-blue-600 font-bold text-xl leading-none">بوابة التدريب</h2>
+                <span class="text-[10px] text-gray-400 uppercase tracking-widest">نظام التدريب الميداني</span>
+            </div>
+        </div>
+
+        <nav class="flex-1 px-4 space-y-2">
+            <a href="{{ route('student.dashboard') }}"
+               class="nav-item flex items-center px-4 py-3 rounded-xl transition {{ request()->routeIs('student.dashboard') ? 'nav-item-active text-white' : 'text-gray-600 hover:bg-gray-50' }}">
+                <i class="fas fa-home ml-3 {{ request()->routeIs('student.dashboard') ? 'text-white' : 'text-gray-400' }}"></i>
+                <span class="text-sm font-medium">الرئيسية</span>
+            </a>
+
+            <a href="{{ route('student.showTraining') }}"
+               class="nav-item flex items-center px-4 py-3 rounded-xl transition {{ request()->routeIs('student.showTraining') ? 'nav-item-active text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                <i class="fas fa-briefcase ml-3 {{ request()->routeIs('student.showTraining') ? 'text-white' : 'text-gray-400' }}"></i>
+                <span class="text-sm font-medium">الفرص التدريبية</span>
+            </a>
+
+            <a href="{{ route('student.myRequests') }}"
+               class="nav-item flex items-center px-4 py-3 rounded-xl transition {{ request()->routeIs('student.myRequests') ? 'nav-item-active text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                <i class="fas fa-file-import ml-3 {{ request()->routeIs('student.myRequests') ? 'text-white' : 'text-gray-400' }}"></i>
+                <span class="text-sm font-medium">طلباتي</span>
+            </a>
+
+            <a href="{{ route('student.Profile') }}"
+               class="nav-item flex items-center px-4 py-3 rounded-xl transition {{ request()->routeIs('student.Profile') ? 'nav-item-active text-white' : 'text-gray-600 hover:bg-gray-100' }}">
+                <i class="fas fa-user ml-3 {{ request()->routeIs('student.Profile') ? 'text-white' : 'text-gray-400' }}"></i>
+                <span class="text-sm font-medium">ملفي الشخصي</span>
+            </a>
+
+            <a href="{{ Auth::user()->student->training_status == 'completed' ? 'https://docs.google.com/forms/d/e/1FAIpQLSc_Ql4MFs52mzv7WljPLhn_p6tse3XQ8vJ6XvrkqsvN34AShg/viewform?usp=sharing' : '#' }}"
+               class="nav-item flex items-center px-4 py-3 text-gray-600 hover:bg-gray-100 rounded-xl transition {{ Auth::user()->student->training_status != 'completed' ? 'pointer-events-none opacity-50' : '' }}" target="_blank">
+                <i class="fas fa-star ml-3 text-gray-400"></i>
+                <span class="text-sm font-medium">تقييم الشركات</span>
+            </a>
         </nav>
+        <div class="relative px-4 mb-4">
+            <button type="button" id="userMenuButton" class="w-full p-4 bg-blue-50 rounded-2xl flex items-center gap-3 border border-blue-100 hover:bg-blue-100 transition-all cursor-pointer focus:outline-none">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=007bff&color=fff&bold=true"
+                     alt="{{ auth()->user()->name }}"
+                     class="w-10 h-10 rounded-full border-2 border-white shadow-sm pointer-events-none">
+
+                <div class="text-right flex-1 pointer-events-none">
+                    <h4 class="text-sm font-bold text-blue-900 leading-none">
+                        {{ auth()->user()->name }}
+                    </h4>
+                    <p class="text-xs text-gray-500 mt-1">
+                        طالب
+                    </p>
+                </div>
+
+                <i class="fas fa-chevron-up text-blue-300 text-xs transition-transform" id="userMenuArrow"></i>
+            </button>
+
+            <div id="logoutDropdown" class="absolute bottom-full left-4 right-4 mb-2 bg-white rounded-xl shadow-xl border border-gray-100 z-50 overflow-hidden hidden transform transition-all duration-200 opacity-0 scale-95">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center justify-between px-4 py-4 text-red-600 hover:bg-red-50 transition-colors text-sm font-bold">
+                        <span>تسجيل الخروج</span>
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+
     </aside>
 
+    <main class="flex-1 flex flex-col">
 
+        <header class="w-full h-14 bg-white border-b border-gray-100 flex justify-end items-center px-10 sticky top-0 z-10 shadow-sm">
+            <div class="relative mr-4" id="notifContainer">
+                <button id="notifButton" class="relative p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all duration-300 focus:outline-none">
+                    <i class="fa-regular fa-bell text-2xl"></i>
+                    {{-- الدائرة الحمراء (Badge) --}}
+                    <span id="notifBadge"
+                          class="absolute top-1.5 right-1.5 w-3 h-3 bg-red-500 rounded-full border-2 border-white {{ $notifications->whereNull('read_at')->count() > 0 ? '' : 'hidden' }}">
+                        {{ $notifications->whereNull('read_at')->count() }}
+                    </span>
+                </button>
 
-    <main class="flex-grow">
+                <div id="notifDropdown" class="absolute left-0 mt-3 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden hidden transform opacity-0 scale-95 transition-all duration-200 z-50">
+                    <div class="p-4 border-b border-gray-50 flex justify-between items-center bg-gray-50/50">
+                        <h4 class="font-bold text-gray-800 text-sm ">الإشعارات</h4>
+                        @if($notifications->whereNull('read_at')->count() > 0)
+                            <button id="markAsRead" class="text-xs text-blue-600 hover:underline font-black ">تحديد الكل كمقروء</button>
+                        @endif
+                    </div>
+
+                    <div class="max-h-[400px] overflow-y-auto custom-scrollbar" id="notificationsContainer">
+                        @forelse($notifications as $notification)
+                            <div class="notification-item p-4 border-b border-gray-50 hover:bg-blue-50/30 transition-colors relative {{ is_null($notification->read_at) ? 'unread bg-blue-50/10' : '' }}" data-id="{{ $notification->id }}">
+                                <div class="flex gap-3">
+                                    <div class="icon-box w-10 h-10 {{ is_null($notification->read_at) ? 'bg-blue-600' : 'bg-gray-100' }} rounded-full flex items-center justify-center flex-shrink-0 transition-colors">
+                                        <i class="fas fa-envelope-open text-xs {{ is_null($notification->read_at) ? 'text-white' : 'text-gray-400' }}"></i>
+                                    </div>
+
+                                    <div class="flex-1">
+                                        <p class="notification-text text-sm {{ is_null($notification->read_at) ? 'text-gray-900 font-black ' : 'text-gray-600 font-medium' }} leading-snug mb-1">
+                                            {{ $notification->data['message'] ?? 'إشعار جديد' }}
+                                        </p>
+                                        <div class="flex justify-between items-center mt-2">
+                                            <span class="text-[10px] text-gray-400 font-bold ">
+                                                <i class="far fa-clock ml-1"></i>{{ $notification->created_at->diffForHumans() }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                @if(is_null($notification->read_at))
+                                    <div class="unread-dot absolute top-4 left-4 w-2 h-2 bg-blue-600 rounded-full"></div>
+                                @endif
+                            </div>
+                        @empty
+                            <div class="p-10 text-center text-gray-400  font-bold">لا توجد إشعارات حالياً</div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+
+        </header>
+
         @yield('content')
-
     </main>
+
+
+
 </div>
-
-
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const button = document.getElementById('userMenuButton');
+        const dropdown = document.getElementById('logoutDropdown');
+        const arrow = document.getElementById('userMenuArrow');
+
+        button.addEventListener('click', function(e) {
+            e.stopPropagation();
+
+            if (dropdown.classList.contains('hidden')) {
+                dropdown.classList.remove('hidden');
+                setTimeout(() => {
+                    dropdown.classList.remove('opacity-0', 'scale-95');
+                    dropdown.classList.add('opacity-100', 'scale-100');
+                }, 10);
+                arrow.style.transform = 'rotate(180deg)';
+            } else {
+                hideDropdown();
+            }
+        });
+
+        document.addEventListener('click', function(event) {
+            if (!button.contains(event.target) && !dropdown.contains(event.target)) {
+                hideDropdown();
+            }
+        });
+
+        function hideDropdown() {
+            dropdown.classList.add('opacity-0', 'scale-95');
+            dropdown.classList.remove('opacity-100', 'scale-100');
+            arrow.style.transform = 'rotate(0deg)';
+            setTimeout(() => {
+                dropdown.classList.add('hidden');
+            }, 200);
+        }
+    });
+
     document.addEventListener("DOMContentLoaded", function () {
         const notifButton = document.getElementById("notifButton");
         const notifDropdown = document.getElementById("notifDropdown");
-        const userMenuButton = document.getElementById("userMenuButton");
-        const userDropdown = document.getElementById("userDropdown");
+        const markAsReadButton = document.getElementById('markAsRead');
         const notifBadge = document.getElementById("notifBadge");
-
-        let unreadNotifications = @json($notifications->whereNull('read_at'));
-
-        if (unreadNotifications.length > 0) {
-            notifBadge.classList.remove("hidden");
-        }
 
         notifButton.addEventListener("click", function (event) {
             event.stopPropagation();
-            notifDropdown.classList.toggle("hidden");
-            userDropdown.classList.add("hidden");
+            const isHidden = notifDropdown.classList.contains('hidden');
+            if (isHidden) {
+                notifDropdown.classList.remove('hidden');
+                setTimeout(() => {
+                    notifDropdown.classList.remove('opacity-0', 'scale-95');
+                    notifDropdown.classList.add('opacity-100', 'scale-100');
+                }, 10);
+            } else {
+                hideDropdown();
+            }
         });
 
-        userMenuButton.addEventListener("click", function (event) {
-            event.stopPropagation();
-            userDropdown.classList.toggle("hidden");
-            notifDropdown.classList.add("hidden");
+        document.addEventListener("click", function (e) {
+            if (!document.getElementById('notifContainer').contains(e.target)) {
+                hideDropdown();
+            }
         });
 
-        document.addEventListener("click", function () {
-            notifDropdown.classList.add("hidden");
-            userDropdown.classList.add("hidden");
-        });
+        function hideDropdown() {
+            notifDropdown.classList.add('opacity-0', 'scale-95');
+            notifDropdown.classList.remove('opacity-100', 'scale-100');
+            setTimeout(() => notifDropdown.classList.add('hidden'), 200);
+        }
 
-        let markAsReadButton = document.getElementById('markAsRead');
         if (markAsReadButton) {
             markAsReadButton.addEventListener('click', function () {
-                fetch('/mark-notifications-read', {
+                const unreadElements = document.querySelectorAll('.notification-item.unread');
+                const ids = Array.from(unreadElements).map(el => el.getAttribute('data-id'));
+
+                if (ids.length === 0) return;
+
+                fetch("{{ route('notifications.markAllRead') }}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        'X-CSRF-TOKEN': "{{ csrf_token() }}"
                     },
-                    body: JSON.stringify({ notifications: unreadNotifications.map(n => n.id) })
-                }).then(response => response.json())
+                    body: JSON.stringify({ notifications: ids })
+                })
+                    .then(response => response.json())
                     .then(data => {
-                        notifBadge.classList.add('hidden');
+                        if (data.status === 'success') {
+                            if(notifBadge) notifBadge.classList.add('hidden');
 
-                        document.querySelectorAll('.unread-notification').forEach(item => {
-                            item.textContent = 'مقروء';
-                            item.classList.remove('text-red-500');
-                            item.classList.add('text-gray-500');
-                        });
+                            unreadElements.forEach(item => {
+                                item.classList.remove('unread', 'bg-blue-50/10');
+                                const dot = item.querySelector('.unread-dot');
+                                if(dot) dot.remove();
 
-                        unreadNotifications = [];
+                                const text = item.querySelector('.notification-text');
+                                if(text) text.classList.replace('text-gray-900', 'text-gray-600');
+                                if(text) text.classList.remove('font-black', 'italic');
+                            });
+
+                            markAsReadButton.style.display = 'none';
+                        }
                     })
-                    .catch(error => {
-                        console.log(error);
-                    });
+                    .catch(error => console.error('Error:', error));
             });
         }
     });
 </script>
-
-
 </body>
-
 </html>
-

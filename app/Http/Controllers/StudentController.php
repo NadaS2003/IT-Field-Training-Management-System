@@ -78,8 +78,33 @@ class StudentController extends Controller
             $supervisormassege = 'لم يتم تعيين مشرف بعد.';
         }
 
+        $currentInternship = Application::where('student_id',$student->id )
+            ->where('status', 'مقبول')
+            ->where('admin_approval', 1)
+            ->first();
 
-        return view('student.dashboard', compact('internship','internships','statusMessage','supervisor','supervisormassege'));
+        $progress = 0;
+
+        if ($currentInternship && $currentInternship->internship->start_date && $currentInternship->internship->end_date) {
+            $start = \Carbon\Carbon::parse($currentInternship->internship->start_date);
+            $end = \Carbon\Carbon::parse($currentInternship->internship->end_date);
+            $now = \Carbon\Carbon::now();
+
+            $totalDays = $start->diffInDays($end);
+
+            $passedDays = $start->diffInDays($now);
+
+            if ($now->greaterThan($end)) {
+                $progress = 100; // التدريب انتهى
+            } elseif ($now->lessThan($start)) {
+                $progress = 0;
+            } else {
+                $progress = ($totalDays > 0) ? round(($passedDays / $totalDays) * 100) : 0;
+            }
+        }
+
+
+        return view('student.dashboard', compact('internship','progress','internships','statusMessage','supervisor','supervisormassege'));
     }
     public function showApplications()
     {

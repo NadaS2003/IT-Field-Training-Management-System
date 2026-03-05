@@ -1,123 +1,161 @@
 @extends('layouts.admin')
-
 @section('content')
-    <div class=" mt-6">
-        <div class="flex justify-center items-center px-3 py-2">
-            <h2 class="text-2xl font-bold  text-center">إدارة الفرص التدريبية</h2>
-        </div>
-    </div>
+    <main class="flex-1 bg-[#f8fafc] min-h-screen  text-right" dir="rtl">
 
-    <div class="mt-3 mb-10 px-8" style="margin-right: 850px">
-        <div class="flex items-center mb-4">
-            <form method="GET" action="{{ route('admin.opportunitiesManagement') }}" class="flex items-center mb-4">
+        <header class="mb-10 px-2">
+            <h1 class="text-2xl font-black text-gray-800 tracking-tight ">إدارة الفرص التدريبية</h1>
+            <p class="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1">يمكنك إضافة وتعديل ومراقبة كافة الفرص التدريبية المتاحة في المنصة.</p>
+        </header>
 
-                <input type="text" name="search" class="form-control px-1 rounded border border-gray-300 w-full py-2 h-10 w-70"
-                       placeholder="البحث باسم الفرصة"
-                       value="{{ request()->get('search') }}">
-
-
-                <button type="submit" class="bg-blue-600 text-white rounded border px-4 py-2 h-10 mx-2 hover:bg-blue-700">
-                    بحث
-                </button>
-
-                <button type="button" class="bg-gray-400 hover:bg-gray-500 text-white rounded border px-2 py-2 h-10 flex justify-center items-center" id="filterButton">
-                    <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                    </svg>
-                </button>
-
-            </form>
-        </div>
-    </div>
-    <div id="filterMenu" class="hidden absolute bg-white border border-gray-300 rounded-md mt-2 left-20 top-40 p-4 shadow-lg w-72 z-10">
-        <form method="GET" action="{{ route('admin.opportunitiesManagement') }}">
-            <div class="mb-4">
-                <label for="duration" class="block text-sm">المدة</label>
-                @if(isset($durations))
-                <select name="duration" id="duration" class="form-control w-full px-2 py-2 rounded border border-gray-300">
-                    <option value="">الكل ...</option>
-                    @foreach($durations as $duration)
-                        <option value="{{ $duration }}" {{ request()->get('duration') == $duration ? 'selected' : '' }}>{{ $duration }}</option>
-                    @endforeach
-                </select>
-                @endif
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+            <div class="bg-white p-6 rounded-[2.2rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-white flex items-center justify-between transition-all hover:shadow-[0_15px_35px_rgba(0,0,0,0.06)] group">
+                <div class="flex flex-col">
+                    <span class="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-1">إجمالي الفرص</span>
+                    <span class="text-3xl font-black text-gray-800 tracking-tighter ">{{ \App\Models\Internship::count()}}</span>
+                </div>
+                <div class="w-14 h-14 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center shadow-sm group-hover:bg-blue-100 transition-colors">
+                    <i class="far fa-file-alt text-2xl"></i>
+                </div>
             </div>
 
-            <div class="mb-4">
-                <label for="company" class="block text-sm">الشركة</label>
-                @if(isset($companies))
-                <select name="company" id="company" class="form-control w-full px-2 py-2 rounded border border-gray-300">
-                    <option value="">كل الشركات</option>
-                    @foreach($companies as $company)
-                        <option value="{{ $company->id }}" {{ request()->get('company') == $company->id ? 'selected' : '' }}>{{ $company->company_name }}</option>
-                    @endforeach
-                </select>
-                @endif
+            <div class="bg-white p-6 rounded-[2.2rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-white flex items-center justify-between transition-all hover:shadow-[0_15px_35px_rgba(0,0,0,0.06)] group">
+                <div class="flex flex-col">
+                    <span class="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-1">فرص نشطة</span>
+                    <span class="text-3xl font-black text-green-600 tracking-tighter ">{{ \App\Models\Internship::where('status', 'مفتوحة')->count() }}</span>
+                </div>
+                <div class="w-14 h-14 bg-green-50 text-green-500 rounded-2xl flex items-center justify-center shadow-sm group-hover:bg-green-100 transition-colors">
+                    <i class="far fa-check-circle text-2xl"></i>
+                </div>
             </div>
-            <button type="submit" class="bg-blue-600 text-white rounded border px-4 py-2 w-full hover:bg-blue-700">تطبيق الفلتر</button>
+
+            <div class="bg-white p-6 rounded-[2.2rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-white flex items-center justify-between transition-all hover:shadow-[0_15px_35px_rgba(0,0,0,0.06)] group">
+                <div class="flex flex-col">
+                    <span class="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-1">مكتملة</span>
+                    <span class="text-3xl font-black text-orange-400 tracking-tighter ">{{ \App\Models\Internship::where('status', 'مكتملة')->count() }}</span>
+                </div>
+                <div class="w-14 h-14 bg-orange-50 text-orange-400 rounded-2xl flex items-center justify-center shadow-sm group-hover:bg-orange-100 transition-colors">
+                    <i class="far fa-calendar-alt text-2xl"></i>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-[2.2rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-white flex items-center justify-between transition-all hover:shadow-[0_15px_35px_rgba(0,0,0,0.06)] group">
+                <div class="flex flex-col">
+                    <span class="text-gray-400 text-[10px] font-black uppercase tracking-widest mb-1">الشركات الشريكة</span>
+                    <span class="text-3xl font-black text-purple-600 tracking-tighter ">{{ \App\Models\Company::count() }}</span>
+                </div>
+                <div class="w-14 h-14 bg-purple-50 text-purple-500 rounded-2xl flex items-center justify-center shadow-sm group-hover:bg-purple-100 transition-colors">
+                    <i class="far fa-building text-2xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <form method="GET" action="{{ route('admin.opportunitiesManagement') }}" class="bg-white p-6 rounded-[2.5rem] shadow-[0_15px_40px_rgba(0,0,0,0.03)] border border-white mb-8 flex flex-col md:flex-row items-end gap-6">
+
+            <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                <div class="relative">
+                    <label class="block text-[10px] font-black text-gray-400 mb-2 mr-2 uppercase tracking-widest ">حالة الفرصة</label>
+                    <select name="status" onchange="this.form.submit()" class="w-full bg-gray-50/50 border border-gray-100 rounded-2xl py-3.5 px-4 text-xs font-bold text-gray-700 shadow-inner outline-none focus:ring-4 focus:ring-blue-50/50 transition-all appearance-none cursor-pointer">
+                        <option value="">الكل</option>
+                        <option value="مفتوحة" {{ request('status') == 'مفتوحة' ? 'selected' : '' }}>مفتوحة</option>
+                        <option value="مغلقة" {{ request('status') == 'مغلقة' ? 'selected' : '' }}>مغلقة</option>
+                        <option value="مكتملة" {{ request('status') == 'مكتملة' ? 'selected' : '' }}>مكتملة</option>
+                    </select>
+                </div>
+
+                <div class="relative">
+                    <label class="block text-[10px] font-black text-gray-400 mb-2 mr-2 uppercase tracking-widest ">تصنيف الشركة</label>
+                    <select name="company_id" onchange="this.form.submit()" class="w-full bg-gray-50/50 border border-gray-100 rounded-2xl py-3.5 px-4 text-xs font-bold text-gray-700 shadow-inner outline-none focus:ring-4 focus:ring-blue-50/50 transition-all appearance-none cursor-pointer">
+                        <option value="">جميع الشركات</option>
+                        @foreach($companies as $company)
+                            <option value="{{ $company->id }}" {{ request('company_id') == $company->id ? 'selected' : '' }}>
+                                {{ $company->company_name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="relative group">
+                    <label class="block text-[10px] font-black text-gray-400 mb-2 mr-2 uppercase tracking-widest ">البحث السريع</label>
+                    <div class="relative">
+                        <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 text-xs group-focus-within:text-blue-500 transition-colors"></i>
+                        <input type="text" name="search" value="{{ request('search') }}" placeholder="ابحث عن عنوان الفرصة..."
+                               class="w-full bg-gray-50/50 border border-gray-100 rounded-2xl py-3.5 pr-12 pl-4 text-xs font-bold text-gray-700 shadow-inner outline-none focus:ring-4 focus:ring-blue-50/50 transition-all">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="h-14 w-14 bg-[#0076df] text-white rounded-2xl hover:bg-blue-700 flex items-center justify-center transition shadow-[0_12px_25px_rgba(0,118,223,0.3)] active:scale-95">
+                <i class="fas fa-filter text-sm"></i>
+            </button>
         </form>
-    </div>
-    <div class="mt-5 mr-5 ml-8 mb-6">
-        <table class="w-full border-collapse border border-gray-300">
-            <thead>
-            <tr>
-                <th class="border border-gray-300 px-4 py-2 text-right">الاسم</th>
-                <th class="border border-gray-300 px-4 py-2 text-right">الوصف</th>
-                <th class="border border-gray-300 px-4 py-2 text-right">الشركة</th>
-                <th class="border border-gray-300 px-4 py-2 text-right">المدة</th>
-                <th class="border border-gray-300 px-4 py-2 text-right">الحالة</th>
-                <th class="border border-gray-300 px-4 py-2 text-right">تاريخ بداية الفرصة</th>
-                <th class="border border-gray-300 px-4 py-2 text-right">تاريخ انتهاء الفرصة</th>
-            </tr>
-            </thead>
-            <tbody>
-            @if($opportunities->isEmpty())
-                <tr>
-                    <td colspan="8" class="border border-gray-300 px-4 py-2 text-center text-gray-500">
-                        لا توجد بيانات
-                    </td>
-                </tr>
-            @else
-            @foreach($opportunities as $opportunity)
-            <tr class="hover:bg-gray-50">
-                <td class="border border-gray-300 px-4 py-2">{{$opportunity->title}}</td>
-                <td class="border border-gray-300 px-4 py-2">{{$opportunity->description}}</td>
-                <td class="border border-gray-300 px-4 py-2">{{$opportunity->company->company_name}}</td>
-                <td class="border border-gray-300 px-4 py-2">{{$opportunity->duration}} أشهر </td>
-                <td class="border border-gray-300 px-4 py-2 font-bold rounded
-                    @if($opportunity->status == 'مفتوحة') text-green-600
-                    @elseif($opportunity->status == 'مغلقة') text-red-600
-                    @elseif($opportunity->status == 'مكتملة') text-yellow-600
-                    @endif">
-                    {{$opportunity->status}}
-                </td>
 
-                <td class="border border-gray-300 px-4 py-2">{{$opportunity->start_date}}</td>
-                <td class="border border-gray-300 px-4 py-2">{{$opportunity->end_date}}</td>
-            </tr>
-            @endforeach
-            @endif
-            </tbody>
-        </table>
-        <div class="mt-4 flex justify-end w-full">
-            {{ $opportunities->links('vendor.pagination.simple-tailwind') }}
+        <div class="bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-white overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-right border-collapse">
+                    <thead>
+                    <tr class="text-gray-400 text-[11px] font-black uppercase tracking-[0.1em] bg-gray-50/30">
+                        <th class="px-8 py-7">الفرصة التدريبية</th>
+                        <th class="px-8 py-7">الشركة</th>
+                        <th class="px-8 py-7">تاريخ النشر</th>
+                        <th class="px-8 py-7">الموعد النهائي</th>
+                        <th class="px-8 py-7 text-center">الحالة</th>
+                    </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                    @forelse($opportunities as $opportunity)
+                        <tr class="hover:bg-gray-50/40 transition-colors group">
+                            <td class="px-8 py-7">
+                                <div class="flex flex-col">
+                                    <span class="text-gray-800 font-black group-hover:text-blue-600 transition-colors text-base">{{$opportunity->title}}</span>
+                                    <span class="text-[10px] text-gray-400 font-black  mt-1 line-clamp-1 max-w-xs">{{$opportunity->description}}</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-7">
+                                <span class="text-xs font-bold text-gray-600  underline decoration-blue-100 decoration-2 underline-offset-4">{{$opportunity->company->company_name}}</span>
+                            </td>
+                            <td class="px-8 py-7">
+                                <span class="text-[10px] font-black text-gray-400 bg-gray-50 px-3 py-1 rounded-lg border border-gray-100 shadow-inner ">{{$opportunity->start_date}}</span>
+                            </td>
+                            <td class="px-8 py-7">
+                                <span class="text-[10px] font-black text-red-400 bg-red-50/30 px-3 py-1 rounded-lg border border-red-50 shadow-inner ">{{$opportunity->end_date}}</span>
+                            </td>
+                            <td class="px-8 py-7 text-center">
+                                @php
+                                    $statusStyles = match($opportunity->status) {
+                                        'مفتوحة' => ['bg' => 'bg-green-50', 'text' => 'text-green-600', 'border' => 'border-green-100'],
+                                        'مغلقة' => ['bg' => 'bg-gray-50', 'text' => 'text-gray-400', 'border' => 'border-gray-200'],
+                                        'مكتملة' => ['bg' => 'bg-orange-50', 'text' => 'text-orange-500', 'border' => 'border-orange-100'],
+                                        default => ['bg' => 'bg-blue-50', 'text' => 'text-blue-600', 'border' => 'border-blue-100'],
+                                    };
+                                @endphp
+                                <span class="{{ $statusStyles['bg'] }} {{ $statusStyles['text'] }} {{ $statusStyles['border'] }} px-5 py-1.5 rounded-xl text-[10px] font-black shadow-sm border inline-flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
+                                {{ $opportunity->status }}
+                            </span>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-8 py-24 text-center">
+                                <div class="w-20 h-20 bg-gray-50 rounded-[2rem] flex items-center justify-center mx-auto mb-4 shadow-inner text-gray-200 text-3xl">
+                                    <i class="fas fa-folder-open"></i>
+                                </div>
+                                <p class="text-gray-400 font-black ">لا توجد فرص تدريبية متاحة حالياً.</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="p-8 border-t border-gray-50 flex justify-between items-center bg-white">
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]"> عرض <span class="text-gray-800 ">{{ $opportunities->count() }}</span> من أصل <span class="text-gray-800 ">{{ $opportunities->total() }}</span> فرصة</p>
+                @if($opportunities->hasPages())
+                    <div class="bg-gray-50/50 px-4 py-1 rounded-2xl shadow-inner border border-gray-100">
+                        {{ $opportunities->links('vendor.pagination.simple-tailwind') }}
+                    </div>
+                @endif
+            </div>
         </div>
-    </div>
-
-    <script>
-        document.getElementById('filterButton').addEventListener('click', function () {
-            let filterMenu = document.getElementById('filterMenu');
-            filterMenu.classList.toggle('hidden');
-        });
-
-        document.addEventListener('click', function (event) {
-            let filterMenu = document.getElementById('filterMenu');
-            let filterButton = document.getElementById('filterButton');
-
-            if (!filterMenu.contains(event.target) && !filterButton.contains(event.target)) {
-                filterMenu.classList.add('hidden');
-            }
-        });
-    </script>
-
+    </main>
 @endsection

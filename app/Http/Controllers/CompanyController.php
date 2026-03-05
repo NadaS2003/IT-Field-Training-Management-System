@@ -26,7 +26,8 @@ class CompanyController extends Controller
     {
         $company_id = Auth::user()->company->id;
         $internshipsCount = Internship::query()->where('company_id', '=', $company_id)->get()->count();
-        $applicationCount = Application::query()->where('company_id',$company_id)->get()->count();
+        $applicationCount = Application::query()->where('company_id',$company_id)->where('status','مقبول')
+            ->get()->count();
         $applicationPendingCount = Application::query()->where('company_id',$company_id)
             ->where('status','قيد المراجعة')
             ->get()->count();
@@ -63,7 +64,7 @@ class CompanyController extends Controller
         $studentCounts = $studentsPerOpportunity->pluck('student_count')->map(fn($count) => $count ?: 0);
 
         return view('company.dashboard', compact('internshipsCount', 'attendanceCounts','labels',
-            'studentCounts','applicationCount','applicationPendingCount','studentsPerOpportunity'));
+            'studentCounts','applicationCount','applicationPendingCount'));
     }
 
 

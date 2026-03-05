@@ -1,110 +1,147 @@
 @extends('layouts.supervisor')
-
 @section('content')
-    <main class="flex-1 p-6">
-        <h2 class="text-2xl font-bold text-center mb-6">تفاصيل الطالب</h2>
+    <main class="p-8 bg-[#f8fafc] min-h-screen text-right " dir="rtl">
 
-        <div class="bg-white p-6 rounded-lg shadow mb-6 border border-gray-200">
-            <h2 class="text-2xl font-bold mb-4">معلومات الطالب</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <p class="mb-1"><strong>الاسم الكامل:</strong> {{$student->full_name}} </p>
-                    <p class="mb-1"><strong>الرقم الجامعي:</strong> {{$student->university_id}} </p>
-                    <p class="mb-1"><strong>البريد الإلكتروني:</strong> {{$student->user->email}} </p>
-                    <p class="mb-1"><strong>رقم الهاتف:</strong> {{$student->phone_number}} </p>
-                    <p class="mb-1"><strong>التخصص:</strong> {{$student->major}} </p>
-                    <p class="mb-1"><strong>السنة الدراسية:</strong> {{$student->academic_year}} </p>
-                    <p class="mb-1"><strong>المعدل التراكمي:</strong> {{$student->gpa}} </p>
-                </div>
-                <div>
-                    <p class="mb-1"><strong>الشركة:</strong> {{$student->applications->first()->company->company_name}}</p>
-                    <p class="mb-1"><strong>تاريخ بدء التدريب:</strong> {{$student->applications->first()->internship->start_date}}</p>
-                    <p class="mb-1"><strong>تاريخ انتهاء التدريب:</strong> {{$student->applications->first()->internship->end_date}}</p>
-                    <p class="mb-1"><strong>مدة التدريب:</strong> {{$student->applications->first()->internship->duration}}</p>
-                    @php
-                        $statusText = match($student->training_status) {
-                            'started' => 'بدأ',
-                            'Not started' => 'لم يبدأ',
-                            'completed' => 'مكتمل',
-                            default => $student->training_status
-                        };
-                    @endphp
-                    <p class="mb-1"><strong>حالة التدريب:</strong> {{ $statusText }}</p>
+        <h1 class="text-2xl font-black text-gray-800 mb-8 px-2 tracking-tight ">تفاصيل الطالب</h1>
+
+        <div class="bg-white p-8 rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-white flex items-center gap-4 mb-8 hover:shadow-[0_15px_35px_rgba(0,0,0,0.06)] transition-all group text-right">
+
+            <div class="w-24 h-24 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100 overflow-hidden shadow-inner ring-2 ring-white">
+                <img src="https://ui-avatars.com/api/?name={{ urlencode($student->full_name) }}&background=EBF4FF&color=007bff&bold=true" class="w-full h-full object-cover">
+            </div>
+            <div class="flex flex-col gap-2">
+                <h2 class="text-3xl font-black text-gray-800 group-hover:text-blue-600 transition-colors tracking-tight">{{$student->full_name}}</h2>
+                <div class="flex items-center gap-4 text-gray-400 font-black text-[11px] uppercase tracking-wider">
+                    <span class="flex items-center gap-1"><i class="fas fa-user-graduate text-blue-400"></i> {{$student->major}}</span>
+                    <span class="opacity-30">|</span>
+                    <span>الرقم الجامعي: <span class="text-gray-600 ">{{$student->university_id}}</span></span>
+                    <span class="opacity-30">•</span>
+                    <span>السنة الدراسية: <span class="text-gray-600 ">{{$student->academic_year}}</span></span>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white p-6 rounded-lg shadow border border-gray-200 mb-5">
-            <h2 class="text-lg font-bold mb-4">الحضور والغياب</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 text-right">
 
-            @if($studentAttendance->isNotEmpty())
-                <div class="mb-4">
-                    <p>عدد أيام الحضور: {{ $presentCount }}</p>
-                    <p>عدد أيام الغياب: {{ $absentCount }}</p>
+            <div class="lg:col-span-2 space-y-8">
+
+                <div class="bg-white p-6 rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-white">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-sm font-black text-gray-800 uppercase tracking-widest">تقدم التدريب</h3>
+                        <span class="text-blue-600 font-black text-xl  tracking-tighter">{{ $progress }}%</span>
+                    </div>
+                    <div class="w-full bg-gray-100 h-3 rounded-full overflow-hidden mb-4 shadow-inner border border-gray-50">
+                        <div class="bg-[#0076df] h-full rounded-full shadow-md transition-all duration-1000 ease-out"  style="width: {{ $progress }}%"></div>
+                    </div>
                 </div>
 
-                <div class="overflow-y-auto max-h-44">
-                    <table class="w-full border-collapse border border-gray-300">
+                <div class="bg-white p-6 rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-white overflow-hidden text-right">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="text-sm font-black text-gray-800 flex items-center gap-2 uppercase tracking-widest">
+                            <i class="fas fa-tasks text-blue-600"></i>
+                            التقييمات الأسبوعية
+                        </h3>
+                    </div>
+                    <table class="w-full text-right border-collapse">
                         <thead>
-                        <tr>
-                            <th class="border border-gray-300 p-2 text-right">التاريخ</th>
-                            <th class="border border-gray-300 p-2 text-right">الحالة</th>
+                        <tr class="text-gray-400 text-[10px] font-black uppercase tracking-[0.1em] bg-gray-50/30">
+                            <th class="px-4 py-4 pr-6 rounded-r-xl">الأسبوع</th>
+                            <th class="px-4 py-4">التاريخ</th>
+                            <th class="px-4 py-4 text-left pl-6 rounded-l-xl">الدرجة</th>
                         </tr>
                         </thead>
-                        <tbody>
-                        @foreach($studentAttendance as $studentAttendance1)
-                            <tr>
-                                <td class="border border-gray-300 p-2">{{$studentAttendance1->date}}</td>
-                                @php
-                                    $attendanceStatus = $studentAttendance1->status;
-                                    $bgColor = $attendanceStatus === 'حاضر' ? 'bg-green-700' : 'bg-red-700';
-                                @endphp
-                                <td class="border border-gray-300 p-2">
-                            <span class="{{ $bgColor }} text-white px-3 py-1 rounded">
-                                {{ $attendanceStatus }}
-                            </span>
-                                </td>
-                            </tr>
-                        @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <p class="text-center text-gray-500">لا توجد بيانات حضور وغياب متاحة.</p>
-            @endif
-        </div>
-
-
-        <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
-            <h2 class="text-lg font-bold mb-4">التقييمات الأسبوعية للطالب</h2>
-
-            @if($weeklyEvaluations->isNotEmpty())
-                <div class="overflow-y-auto max-h-64">
-                    <table class="w-full border-collapse border border-gray-300">
-                        <thead>
-                        <tr>
-                            <th class="border border-gray-300 p-2 text-right">اسم الأسبوع</th>
-                            <th class="border border-gray-300 p-2 text-right">التقييم</th>
-                        </tr>
-                        </thead>
-                        <tbody>
+                        <tbody class="divide-y divide-gray-50 text-right">
                         @foreach($weeklyEvaluations as $evaluation)
-                            <tr>
-                                <td class="border border-gray-300 p-2">{{ $evaluation->week_name }}</td>
-                                <td class="border border-gray-300 p-2">
-                                    <span class="text-black px-3 py-1 rounded">
-                                        {{ $evaluation->evaluation }}
-                                    </span>
+                            <tr class="hover:bg-gray-50/40 transition-colors group">
+                                <td class="px-4 py-5 pr-6 font-black group-hover:text-blue-600 transition-colors text-xs">{{ $evaluation->week_name }}</td>
+                                <td class="px-4 py-5 text-gray-400  text-[11px]">2023/11/02</td>
+                                <td class="px-4 py-5 text-left pl-6">
+                                    <span class="bg-blue-50/50 text-blue-600 px-3 py-1 rounded-lg border border-blue-100 shadow-sm font-black ">{{ $evaluation->evaluation }}</span>
                                 </td>
                             </tr>
                         @endforeach
                         </tbody>
                     </table>
+                    <div class="mt-6 text-center">
+                        <button class="text-[10px] text-gray-400 font-black uppercase tracking-widest hover:text-blue-600 hover:underline transition-all">عرض جميع التقييمات السابقة</button>
+                    </div>
                 </div>
-            @else
-                <p class="text-center text-gray-500">لا توجد تقييمات أسبوعية متاحة.</p>
-            @endif
-        </div>
+            </div>
 
+            <div class="space-y-8 text-right">
+                <div class="bg-white p-6 rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-white grid grid-cols-2 gap-4 text-center">
+                    <div class="border-l border-gray-100 p-2 bg-gray-50/30 rounded-2xl shadow-inner">
+                        <p class="text-[10px] text-gray-400 font-black mb-1 uppercase tracking-widest">حضور</p>
+                        <span class="text-3xl font-black text-green-600  leading-none">{{ $presentCount }}</span>
+                    </div>
+                    <div class="p-2 bg-gray-50/30 rounded-2xl shadow-inner border border-gray-50">
+                        <p class="text-[10px] text-gray-400 font-black mb-1 uppercase tracking-widest">غياب</p>
+                        <span class="text-3xl font-black text-red-500  leading-none">{{ $absentCount }}</span>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-white text-right hover:shadow-[0_15px_35px_rgba(0,0,0,0.06)] transition-shadow">
+                    <h3 class="text-sm font-black text-gray-800 mb-6 flex items-center gap-2 uppercase tracking-widest">
+                        <i class="far fa-user text-blue-600"></i>
+                        المعلومات الشخصية
+                    </h3>
+                    <div class="space-y-5">
+                        <div class="flex justify-between items-center border-b border-gray-50 pb-3">
+                            <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest">البريد الإلكتروني</span>
+                            <span class="text-xs font-bold text-gray-700  lowercase bg-gray-50 px-3 py-1 rounded-lg shadow-inner border border-gray-100">{{$student->user->email}}</span>
+                        </div>
+                        <div class="flex justify-between items-center pb-1">
+                            <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest">رقم الجوال</span>
+                            <span class="text-xs font-bold text-gray-700  tracking-tight">{{$student->phone_number}}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-[2rem] shadow-[0_10px_30px_rgba(0,0,0,0.03)] border border-white text-right hover:shadow-[0_15px_35px_rgba(0,0,0,0.06)] transition-shadow">
+                    <h3 class="text-sm font-black text-gray-800 mb-6 flex items-center gap-2 uppercase tracking-widest">
+                        <i class="fas fa-graduation-cap text-blue-600"></i>
+                        السجل الأكاديمي
+                    </h3>
+                    <div class="space-y-5 text-right">
+                        <div class="flex justify-between border-b border-gray-50 pb-3 items-center">
+                            <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest">المعدل التراكمي</span>
+                            <span class="text-sm font-black text-blue-600  bg-blue-50/50 px-3 py-1 rounded-lg border border-blue-100 shadow-sm">{{$student->gpa}}%</span>
+                        </div>
+                        @php
+                            $status = $student->training_status;
+                            $badgeStyle = match($status) {
+                                'completed', 'مكتمل' => 'bg-green-50 text-green-600 border-green-100',
+                                'started', 'بدأ', 'قيد التدريب' => 'bg-orange-50 text-orange-600 border-orange-100',
+                                default => 'bg-red-50 text-red-600 border-red-100',
+                            };
+                            $statusLabel = match($status) {
+                                'completed', 'مكتمل' => 'مكتمل',
+                                'started', 'بدأ', 'قيد التدريب' => 'قيد التدريب',
+                                default => 'لم يبدأ',
+                            };
+                        @endphp
+                        <div class="flex justify-between border-b border-gray-50 pb-3 items-center">
+                            <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest">الشركة</span>
+                            <span class="text-xs font-bold text-gray-700  bg-gray-50 px-3 py-1 rounded-lg shadow-inner border border-gray-100">{{$student->applications->first()->company->company_name ?? 'غير محدد'}}</span>
+                        </div>
+                        <div class="flex justify-between border-b border-gray-50 pb-3 items-center">
+                            <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest">حالة التدريب</span>
+                            <span class="{{ $badgeStyle }} px-4 py-1.5 rounded-xl text-[9px] font-black border shadow-sm uppercase tracking-tighter inline-flex items-center gap-2">
+                                <span class="w-1.5 h-1.5 rounded-full bg-current @if($status != 'completed') animate-pulse @endif"></span>
+                                {{ $statusLabel }}
+                        </span>
+                        </div>
+                        <div class="flex justify-between border-b border-gray-50 pb-3 items-center">
+                            <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest">تاريخ البدء</span>
+                            <span class="text-xs font-bold text-gray-700  tracking-tight">{{$student->applications->first()->internship->start_date ?? '--'}}</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-1">
+                            <span class="text-[9px] text-gray-400 font-black uppercase tracking-widest">تاريخ الانتهاء</span>
+                            <span class="text-xs font-bold text-gray-700  tracking-tight">{{$student->applications->first()->internship->end_date ?? '--'}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 @endsection

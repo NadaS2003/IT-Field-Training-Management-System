@@ -37,16 +37,7 @@ class AttendanceController extends Controller
             ->sort()
             ->values();
 
-        $trainingBooks = Student::whereHas('applications', function ($query) use ($company_id) {
-            $query->where('status', 'مقبول')
-                ->where('admin_approval', 1)
-                ->where('company_id', $company_id);
-        })
-            ->leftJoin('evaluations', 'students.id', '=', 'evaluations.student_id')
-            ->select('students.*', 'evaluations.evaluation_letter')
-            ->get();
-
-        return view('company.reportsAndRates', compact('students', 'attendanceData', 'evaluations', 'weeks', 'trainingBooks'));
+        return view('company.reportsAndRates', compact('students', 'attendanceData', 'evaluations', 'weeks'));
     }
 
     public function store(Request $request)
