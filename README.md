@@ -93,6 +93,31 @@ This system was developed as a graduation project to provide a structured and ef
 
 <img width="1921" height="1006" alt="screencapture-127-0-0-1-8000-showTraining-2026-03-05-01_00_45" src="https://github.com/user-attachments/assets/9996380c-fb4e-4d2f-9737-cade18457108" />
 
+<img width="1921" height="1754" alt="screencapture-127-0-0-1-8000-OpportunityDetails-2-2026-03-06-00_59_35" src="https://github.com/user-attachments/assets/f198e603-dc2b-4852-a348-bae0c4ae30e2" />
+
+<img width="1921" height="1424" alt="14" src="https://github.com/user-attachments/assets/bb0a1456-bbaf-494e-82f3-fd5d78294ded" />
+
+<img width="1921" height="992" alt="15" src="https://github.com/user-attachments/assets/981cf5de-33b7-4fbb-a834-b246d15a6652" />
+
+<img width="1921" height="992" alt="16" src="https://github.com/user-attachments/assets/ef281a72-c5f3-4fcb-9db1-135a9c757986" />
+
+<img width="1921" height="1048" alt="17" src="https://github.com/user-attachments/assets/55c268e6-4ed0-40b8-8492-4a203ce863ca" />
+
+<img width="1921" height="992" alt="18" src="https://github.com/user-attachments/assets/1f9a4f69-d08c-4011-96fd-4d3f9a921ab2" />
+
+<img width="1921" height="992" alt="19" src="https://github.com/user-attachments/assets/e9ed464b-e1e8-4cbe-81de-2bd26d653ce2" />
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
