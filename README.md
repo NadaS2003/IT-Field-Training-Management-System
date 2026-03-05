@@ -1,66 +1,125 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+    <img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo">
 </p>
 
-## About Laravel
+<h1 align="center">IT Field Training Management System</h1>
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+A full-stack web application developed to help IT students find and apply for field training opportunities while enabling companies and academic supervisors to manage and track the training process efficiently.
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## 📌 Problem Statement
 
-## Learning Laravel
+Field training is a mandatory requirement for IT students, yet many struggle to find suitable opportunities due to a lack of structure, centralized management, and proper follow-up.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+This platform solves that problem by providing a structured digital system that connects students, companies, and supervisors in one centralized platform.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🚀 Key Features
 
-## Laravel Sponsors
+- Multi-role authentication system (Students, Companies, Supervisors, Admin)
+- Internship opportunity management (add, edit, delete)
+- Advanced search & filtering system
+- Internship application & status tracking (Under Review / Accepted / Rejected)
+- Personalized user profiles (skills, CV uploads, documents)
+- Evaluation and review system
+- Comprehensive dashboards with statistics and reports
+- Role-based access control
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+---
 
-### Premium Partners
+## 🛠️ Tech Stack
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+- PHP 8.2  
+- Laravel 10  
+- SQLite  
+- Blade Templating Engine  
+- HTML5  
+- CSS3  
+- Tailwind CSS  
+- Bootstrap  
+- JavaScript  
+- XAMPP (Development Environment)
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## 🧪 Development Methodology
 
-## Code of Conduct
+Waterfall Model:
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Requirements → Design → Implementation → Testing → Deployment
 
-## Security Vulnerabilities
+### Testing Included:
+- Unit Testing  
+- Integration Testing  
+- User Acceptance Testing  
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🔮 Future Improvements
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+- Real-time chat between students and companies  
+- Mobile application version  
+- Advanced training analytics and performance tracking  
+
+---
+
+## 👩‍💻 About the Project
+
+This system was developed as a graduation project to provide a structured and efficient solution for managing IT field training processes within the university environment.
+
+---
+
+## 📷 Screenshots
+
+<img width="1921" height="1478" alt="screencapture-127-0-0-1-8000-2026-03-05-00_57_27" src="https://github.com/user-attachments/assets/1cb15601-3611-46d0-8ab2-5236c9bc3b34" />
+
+<img width="1921" height="920" alt="screencapture-127-0-0-1-8000-loginAll-2026-03-05-00_57_38" src="https://github.com/user-attachments/assets/ae17bf2d-6293-4856-9b62-01c1ab9b60f1" />
+
+<img width="1921" height="920" alt="screencapture-127-0-0-1-8000-studentLogin-2026-03-05-00_57_48" src="https://github.com/user-attachments/assets/f8441279-63e0-4735-b11e-d018d4665af4" />
+
+<img width="1921" height="920" alt="screencapture-127-0-0-1-8000-registerAll-2026-03-05-00_58_02" src="https://github.com/user-attachments/assets/a473cf59-77a5-4382-80a9-8731e25a102b" />
+
+<img width="1921" height="1136" alt="screencapture-127-0-0-1-8000-adminDash-2026-03-05-00_59_26" src="https://github.com/user-attachments/assets/9cbb6aa6-c5ec-4af5-bf4c-e653e68d5a62" />
+
+<img width="1921" height="1075" alt="screencapture-127-0-0-1-8000-trainingRequests-2026-03-05-00_59_43" src="https://github.com/user-attachments/assets/e0da20e2-f7b0-45d2-be07-e09a70330d98" />
+
+<img width="1921" height="1075" alt="screencapture-127-0-0-1-8000-studentsData-2026-03-05-00_59_56" src="https://github.com/user-attachments/assets/d45c1ffa-e9ea-4cab-9fc2-bfe4353ebd31" />
+
+<img width="1921" height="1197" alt="screencapture-127-0-0-1-8000-studentDash-2026-03-05-01_00_39" src="https://github.com/user-attachments/assets/c2443531-5c4f-4765-a34a-7aa6d0b27d26" />
+
+<img width="1921" height="1006" alt="screencapture-127-0-0-1-8000-showTraining-2026-03-05-01_00_45" src="https://github.com/user-attachments/assets/9996380c-fb4e-4d2f-9737-cade18457108" />
+
+<img width="1921" height="1754" alt="screencapture-127-0-0-1-8000-OpportunityDetails-2-2026-03-06-00_59_35" src="https://github.com/user-attachments/assets/f198e603-dc2b-4852-a348-bae0c4ae30e2" />
+
+<img width="1921" height="1424" alt="14" src="https://github.com/user-attachments/assets/bb0a1456-bbaf-494e-82f3-fd5d78294ded" />
+
+<img width="1921" height="992" alt="15" src="https://github.com/user-attachments/assets/981cf5de-33b7-4fbb-a834-b246d15a6652" />
+
+<img width="1921" height="992" alt="16" src="https://github.com/user-attachments/assets/ef281a72-c5f3-4fcb-9db1-135a9c757986" />
+
+<img width="1921" height="1048" alt="17" src="https://github.com/user-attachments/assets/55c268e6-4ed0-40b8-8492-4a203ce863ca" />
+
+<img width="1921" height="992" alt="18" src="https://github.com/user-attachments/assets/1f9a4f69-d08c-4011-96fd-4d3f9a921ab2" />
+
+<img width="1921" height="992" alt="19" src="https://github.com/user-attachments/assets/e9ed464b-e1e8-4cbe-81de-2bd26d653ce2" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
